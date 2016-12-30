@@ -30,7 +30,7 @@ const config = {
    */
   compiler_babel: {
     cacheDirectory: true,
-    plugins: ['transform-runtime'],
+    plugins: ['transform-runtime', 'react-hot-loader/babel'],
     presets: [['es2015', { modules: false }], 'react'],
   },
   compiler_devtool: 'source-map',

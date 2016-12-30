@@ -22,16 +22,19 @@ const webpackConfig = {
     extensions: ['.js', '.jsx', '.json'],
   },
   module: {},
+  // shut up about bundle size when it's not minified
+  performance: { hints: ENV_PROD ? 'warning' : false },
 };
 // ------------------------------------
 // Entry Points
 // ------------------------------------
 const APP_ENTRY = paths.client('main.js');
+const REACT_HOT_PATCH = 'react-hot-loader/patch';
 
 webpackConfig.entry = {
   app: ENV_DEV
-    ? [APP_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`)
-    : [APP_ENTRY],
+    ? [REACT_HOT_PATCH, APP_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`)
+    : [REACT_HOT_PATCH, APP_ENTRY],
   vendor: config.compiler_vendors,
 };
 
