@@ -13,37 +13,37 @@ const config = {
   /**
    * Project structure
    */
-  path_base: path.resolve(__dirname, '..'),
-  dir_client: 'src',
-  dir_dist: 'dist',
-  dir_server: 'server',
-  dir_test: 'tests',
+  basePath: path.resolve(__dirname, '..'),
+  clientDir: 'src',
+  distDir: 'dist',
+  serverDir: 'server',
+  testDir: 'tests',
 
   /**
    * server config
    */
-  server_host: ip.address(), // use string 'localhost' to prevent exposure on local network
-  server_port: process.env.PORT || 3000,
+  serverHost: ip.address(), // use string 'localhost' to prevent exposure on local network
+  serverPort: process.env.PORT || 3000,
 
   /**
    * Compiler Configuration
    */
-  compiler_babel: {
+  babelConfig: {
     cacheDirectory: true,
     plugins: ['transform-runtime', 'react-hot-loader/babel'],
     presets: [['es2015', { modules: false }], 'react'],
   },
-  compiler_devtool: 'source-map',
-  compiler_hash_type: 'hash',
-  compiler_fail_on_warning: false,
-  compiler_quiet: false,
-  compiler_public_path: '/',
-  compiler_stats: {
+  compilerDevtool: 'source-map',
+  compilerHashType: 'hash',
+  compilerFailOnWarning: false,
+  compilerQuiet: false,
+  compilerPublicPath: '/',
+  compilerStats: {
     chunks: false,
     chunkModules: false,
     colors: true,
   },
-  compiler_vendors: [
+  compilerVendors: [
     'react',
     'react-redux',
     'react-router',
@@ -53,7 +53,7 @@ const config = {
   /**
    * Compiler configuration
    */
-  coverage_reporters: [
+  coveragerReporters: [
     { type: 'text-summary' },
     { type: 'lcov', dir: 'coverage' },
   ],
@@ -80,7 +80,7 @@ config.globals = {
  */
 const pkg = require('../package.json');
 
-config.compiler_vendors = config.compiler_vendors
+config.compilerVendors = config.compilerVendors
   .filter((dep) => {
     if (pkg.dependencies[dep]) {
       return true;
@@ -89,7 +89,7 @@ config.compiler_vendors = config.compiler_vendors
     debug(
       `Package "${dep}" was not found as an npm dependency in package.json; ` +
       `it won't be included in the webpack vendor bundle.
-       Consider removing it from \`compiler_vendors\` in ~/config/index.js`
+       Consider removing it from \`compilerVendors\` in ~/config/index.js`
     );
     return false;
   });
@@ -97,15 +97,15 @@ config.compiler_vendors = config.compiler_vendors
 /**
  * Utilities
  */
-function base(...rest) {
-  const args = [config.path_base].concat(rest);
+const base = (...rest) => {
+  const args = [config.basePath].concat(rest);
   return path.resolve(...args);
-}
+};
 
-config.utils_paths = {
+config.utilsPaths = {
   base,
-  client: base.bind(null, config.dir_client),
-  dist: base.bind(null, config.dir_dist),
+  client: base.bind(null, config.clientDir),
+  dist: base.bind(null, config.distDir),
 };
 
 /**

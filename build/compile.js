@@ -4,14 +4,14 @@ const webpackCompiler = require('./webpackCompiler.js');
 const webpackConfig = require('../config/webpack.config.js');
 const config = require('../config/config.js');
 
-const paths = config.utils_paths;
+const paths = config.utilsPaths;
 
 const compile = () => {
   debug('Starting compiler.');
   return Promise.resolve()
     .then(() => webpackCompiler(webpackConfig))
     .then((stats) => {
-      if (stats.warnings.length && config.compiler_fail_on_warning) {
+      if (stats.warnings.length && config.compilerFailOnWarning) {
         throw new Error('Config set to fail on warning, exiting with status code "1".');
       }
       debug('Copying static assets to dist folder.');

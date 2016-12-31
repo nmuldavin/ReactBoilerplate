@@ -7,7 +7,7 @@ const config = require('../config/config.js');
 const compress = require('compression');
 
 const app = express();
-const paths = config.utils_paths;
+const paths = config.utilsPaths;
 
 // This rewrites all routes requests to the root /index.html file
 // (ignoring file requests). If you want to implement universal
@@ -28,10 +28,10 @@ if (config.env === 'development') {
     publicPath: webpackConfig.output.publicPath,
     contentBase: paths.client(),
     hot: true,
-    quiet: config.compiler_quiet,
-    noInfo: config.compiler_quiet,
+    quiet: config.compilerQuiet,
+    noInfo: config.compilerQuiet,
     lazy: false,
-    stats: config.compiler_stats,
+    stats: config.compilerStats,
   }));
   app.use(require('webpack-hot-middleware')(compiler));
 

@@ -1,4 +1,3 @@
-
 const argv = require('yargs').argv;
 const webpack = require('webpack');
 const cssnano = require('cssnano');
@@ -7,7 +6,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const config = require('./config');
 const debug = require('debug')('app:config:webpack');
 
-const paths = config.utils_paths;
+const paths = config.utilsPaths;
 const ENV_DEV = config.globals.ENV_DEV;
 const ENV_PROD = config.globals.ENV_PROD;
 const ENV_TEST = config.globals.ENV_TEST;
@@ -16,7 +15,7 @@ debug('Creating configuration.');
 const webpackConfig = {
   name: 'client',
   target: 'web',
-  devtool: config.compiler_devtool,
+  devtool: config.compilerDevtool,
   resolve: {
     modules: [paths.client(), 'node_modules'],
     extensions: ['.js', '.jsx', '.json'],
@@ -29,22 +28,23 @@ const webpackConfig = {
 // Entry Points
 // ------------------------------------
 const APP_ENTRY = paths.client('main.js');
+const HOT_ENTRY = paths.client('hotReload.js');
 const REACT_HOT_PATCH = 'react-hot-loader/patch';
 
 webpackConfig.entry = {
-  app: ENV_DEV
-    ? [REACT_HOT_PATCH, APP_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compiler_public_path}__webpack_hmr`)
-    : [REACT_HOT_PATCH, APP_ENTRY],
-  vendor: config.compiler_vendors,
+  app: (ENV_DEV ?
+    [REACT_HOT_PATCH, HOT_ENTRY] :
+    [APP_ENTRY]).concat(`webpack-hot-middleware/client?path=${config.compilerPublicPath}__webpack_hmr`),
+  vendor: config.compilerVendors,
 };
 
 // ------------------------------------
 // Bundle Output
 // ------------------------------------
 webpackConfig.output = {
-  filename: `[name].[${config.compiler_hash_type}].js`,
+  filename: `[name].[${config.compilerHashType}].js`,
   path: paths.dist(),
-  publicPath: config.compiler_public_path,
+  publicPath: config.compilerPublicPath,
 };
 
 // ------------------------------------
@@ -155,7 +155,7 @@ webpackConfig.module.loaders = [{
   test: /\.(js|jsx)$/,
   exclude: /node_modules/,
   loader: 'babel-loader',
-  query: config.compiler_babel,
+  query: config.babelConfig,
 }, {
   test: /\.json$/,
   loader: 'json-loader',

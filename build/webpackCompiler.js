@@ -3,7 +3,7 @@ const debug = require('debug')('app:build:webpack-compile');
 const config = require('../config/config.js');
 
 function webpackCompiler(webpackConfig, statsFormatSpec) {
-  const statsFormat = statsFormatSpec || config.compiler_stats;
+  const statsFormat = statsFormatSpec || config.compilerStats;
 
   return new Promise((resolve, reject) => {
     const compiler = webpack(webpackConfig);

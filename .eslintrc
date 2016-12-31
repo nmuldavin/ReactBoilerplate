@@ -6,10 +6,10 @@
     "browser" : true
   },
   "globals": {
-    "ENV_DEV"      : false,
-    "ENV_TEST"     : false,
-    "ENV_PROD"     : false,
-    "REPORT_COVERAGE" : false
+    "ENV_DEV": false,
+    "ENV_TEST": false,
+    "ENV_PROD": false,
+    "REPORT_COVERAGE": false
   },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
