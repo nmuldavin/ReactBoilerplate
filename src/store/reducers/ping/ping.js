@@ -15,6 +15,7 @@ const ping = (state = { isPinging: false }, action) => {
     case actionTypes.PING:
       return { isPinging: true };
 
+    case actionTypes.EPIC_RELOAD:
     case actionTypes.PONG:
       return { isPinging: false };
 

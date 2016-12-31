@@ -55,10 +55,9 @@ const initHotStore = (initialState) => {
 
     /*
      * Epic hot reloading
-     * NOTE: redux-most will emit an event of type @redux-most/EPIC_END before
+     * NOTE: redux-most will emit an event of type @@redux-most/EPIC_END before
      * replacing root epic. If there is any intermediate state in the store that
-     * would be dangerous if persisted, it should reset on this action. Do not use this
-     * in production
+     * would be dangerous if persisted, it should reset on this action.
      */
     module.hot.accept('./epics/rootEpic', () => {
       const nextEpic = require('./epics/rootEpic').default;
