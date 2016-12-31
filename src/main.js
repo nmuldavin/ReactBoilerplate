@@ -1,8 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { Provider } from 'react-redux'
+import { Provider } from 'react-redux';
+import './utils/utils';
 import store from './store/createStore';
-import other from './other';
+
 
 /**
  * MOUNT_NODE
@@ -18,7 +19,7 @@ const MOUNT_NODE = document.getElementById('root');
  */
 const Root = () => (
   <Provider store={store}>
-    <div>{other}</div>
+    <div>Taco</div>
   </Provider>
 );
 
