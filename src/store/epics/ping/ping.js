@@ -13,7 +13,7 @@ import actionTypes from '../../actionTypes';
 const pingEpic = action =>
   action
     .ofType(actionTypes.PING)
-    .delay(1000)
+    .delay(5000)
     .map(() => ({ type: actionTypes.PONG }));
 
 export default pingEpic;

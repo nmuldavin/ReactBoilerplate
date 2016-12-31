@@ -3,7 +3,7 @@
  * Creates root redux reducer
  */
 import { combineReducers } from 'redux';
-import ping from './pingPong/pingPong';
+import ping from './ping/ping';
 
 /**
  * Root reducer
