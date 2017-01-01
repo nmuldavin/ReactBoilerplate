@@ -33,8 +33,8 @@ const REACT_HOT_PATCH = 'react-hot-loader/patch';
 
 webpackConfig.entry = {
   app: (ENV_DEV ?
-    [REACT_HOT_PATCH, HOT_ENTRY] :
-    [APP_ENTRY]).concat(`webpack-hot-middleware/client?path=${config.compilerPublicPath}__webpack_hmr`),
+    [REACT_HOT_PATCH, HOT_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compilerPublicPath}__webpack_hmr`) :
+    [APP_ENTRY]),
   vendor: config.compilerVendors,
 };
 
@@ -81,9 +81,6 @@ webpackConfig.plugins = [
           sourcemap: true,
         }),
       ],
-      sassLoader: {
-        includePaths: paths.client('styles'),
-      },
     },
   }),
   new HtmlWebpackPlugin({
@@ -166,17 +163,17 @@ webpackConfig.module.loaders = [{
 // ------------------------------------
 // We use cssnano with the postcss loader, so we tell
 // css-loader not to duplicate minimization.
-const BASE_CSS_LOADER = 'css-loader?sourceMap&-minimize';
+const BASE_CSS_LOADER = 'css-loader?sourceMap&-minimize&modules&camelCase';
 
-webpackConfig.module.loaders.push({
-  test: /\.scss$/,
-  loaders: [
-    'style-loader',
-    BASE_CSS_LOADER,
-    'postcss-loader',
-    'sass-loader?sourceMap',
-  ],
-});
+// webpackConfig.module.loaders.push({
+//   test: /\.scss$/,
+//   loaders: [
+//     'style-loader',
+//     BASE_CSS_LOADER,
+//     'postcss-loader',
+//     'sass-loader?sourceMap',
+//   ],
+// });
 webpackConfig.module.loaders.push({
   test: /\.css$/,
   loaders: [

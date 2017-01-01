@@ -1,0 +1,12 @@
+.helvetica {
+  font-family: Helvetica, sans-serif;
+}
+
+.large {
+  font-size: 20px;
+}
+
+.header {
+  composes: large helvetica;
+  composes: blue from "./colors.css";
+}
