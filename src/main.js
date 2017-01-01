@@ -1,25 +1,33 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter, Match } from 'react-router';
 import './utils/utils';
 import store from './store/createStore';
+import { Ping, Home } from './routes/routes';
+import Header from './components';
 
 
 /**
- * MOUNT_NODE
- * @type {HtmlElement}
  * Html element on which to mount app
  */
 const MOUNT_NODE = document.getElementById('root');
 
 /**
  * Root
- * @type {ReactComponent}
- * Root application component
+ * Root application component - wraps app in react-redux Provider component and Routing
+ * NOTE: Using react-router v4 which is in alpha. The API could change.
+ * @todo Connect router with redux store after router 4 api is finalized
  */
 const Root = () => (
   <Provider store={store}>
-    <div>Taco</div>
+    <BrowserRouter>
+      <div>
+        <Header />
+        <Match exactly pattern="/" component={Home} />
+        <Match exactly pattern="/ping" component={Ping} />
+      </div>
+    </BrowserRouter>
   </Provider>
 );
 
@@ -34,55 +42,3 @@ export {
   MOUNT_NODE,
   Root,
 };
-
-// let render = (thing) => {
-//   ReactDOM.render(
-//     <AppContainer>
-//       <div>{thing}</div>
-//     </AppContainer>,
-//     MOUNT_NODE
-//   );
-// };
-//
-// // ========================================================
-// // Developer Tools Setup
-// // ========================================================
-//
-// if (ENV_DEV) {
-//   if (window.__REDUX_DEVTOOLS_EXTENSION__) {
-//     window.__REDUX_DEVTOOLS_EXTENSION__.open();
-//   }
-// }
-//
-// // This code is excluded from production bundle
-// if (ENV_DEV) {
-//   if (module.hot) {
-//     // Development render functions
-//     const renderApp = render;
-//     const renderError = (error) => {
-//       const RedBox = require('redbox-react').default;
-//
-//       ReactDOM.render(<RedBox error={error} />, MOUNT_NODE);
-//     };
-//
-//     // Wrap render in try/catch
-//     render = (thing) => {
-//       try {
-//         renderApp(thing);
-//       } catch (error) {
-//         renderError(error);
-//       }
-//     };
-//     if (module.hot) {
-//       module.hot.accept('./other', () => {
-//         const nextOther = require('./other').default;
-//         render(nextOther);
-//       });
-//     }
-//   }
-// }
-//
-// // ========================================================
-// // Go!
-// // ========================================================
-// render(other);
