@@ -24,17 +24,31 @@ const webpackConfig = {
   // shut up about bundle size when it's not minified
   performance: { hints: ENV_PROD ? 'warning' : false },
 };
+
 // ------------------------------------
 // Entry Points
 // ------------------------------------
 const APP_ENTRY = paths.client('main.js');
-const HOT_ENTRY = paths.client('hotReload.js');
-const REACT_HOT_PATCH = 'react-hot-loader/patch';
+const HOT_APP_ENTRY = paths.client('hotReload.js');
+const REACT_HOT_PATCH_ENTRY = 'react-hot-loader/patch';
+const HOT_MIDDLEWARE_ENTRY = `webpack-hot-middleware/client?path=${config.compilerPublicPath}__webpack_hmr`;
+const BABEL_POLYFILL_ENTRY = 'babel-polyfill';
+
+const HOT_ENTRY_PATHS = [
+  REACT_HOT_PATCH_ENTRY,
+  HOT_APP_ENTRY,
+  HOT_MIDDLEWARE_ENTRY,
+];
+
+const PROD_ENTRY_PATHS = [
+  BABEL_POLYFILL_ENTRY,
+  APP_ENTRY,
+];
 
 webpackConfig.entry = {
   app: (ENV_DEV ?
-    [REACT_HOT_PATCH, HOT_ENTRY].concat(`webpack-hot-middleware/client?path=${config.compilerPublicPath}__webpack_hmr`) :
-    [APP_ENTRY]),
+    HOT_ENTRY_PATHS :
+    PROD_ENTRY_PATHS),
   vendor: config.compilerVendors,
 };
 
@@ -98,7 +112,7 @@ webpackConfig.plugins = [
 // Ensure that the compiler exits on errors during testing so that
 // they do not get skipped and misreported.
 if (ENV_TEST && !argv.watch) {
-  webpackConfig.plugins.push(() => {
+  webpackConfig.plugins.push(function pushPlugins() {
     this.plugin('done', (stats) => {
       const errors = [];
       if (stats.compilation.errors.length) {

@@ -17,7 +17,7 @@ const config = {
   clientDir: 'src',
   distDir: 'dist',
   serverDir: 'server',
-  testDir: 'tests',
+  testDir: 'dev',
 
   /**
    * server config
@@ -31,7 +31,7 @@ const config = {
   babelConfig: {
     cacheDirectory: true,
     plugins: ['transform-runtime', 'react-hot-loader/babel'],
-    presets: [['es2015', { modules: false }], 'react'],
+    presets: [['latest', { modules: false }], 'react', 'stage-3'],
   },
   compilerDevtool: 'source-map',
   compilerHashType: 'hash',
@@ -55,7 +55,7 @@ const config = {
   /**
    * Compiler configuration
    */
-  coveragerReporters: [
+  coverageReporters: [
     { type: 'text-summary' },
     { type: 'lcov', dir: 'coverage' },
   ],
