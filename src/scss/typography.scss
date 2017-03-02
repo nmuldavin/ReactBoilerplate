@@ -1,0 +1,10 @@
+@import 'theme';
+
+@mixin large {
+  font-size: 20px;
+}
+
+@mixin header {
+  @include large;
+  color: blue;
+}

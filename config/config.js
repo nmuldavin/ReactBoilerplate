@@ -48,7 +48,7 @@ const config = {
     'most',
     'redux-most',
     'react-redux',
-    'react-router',
+    'react-router-dom',
     'redux',
   ],
 
@@ -107,6 +107,7 @@ const base = (...rest) => {
 config.utilsPaths = {
   base,
   client: base.bind(null, config.clientDir),
+  scss: base.bind(null, config.clientDir, 'scss'),
   dist: base.bind(null, config.distDir),
 };
 

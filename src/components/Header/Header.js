@@ -3,8 +3,8 @@
  * Reusable Header Component
  */
 import React from 'react';
-import { Link } from 'react-router';
-import styles from './Header.css';
+import { Link } from 'react-router-dom';
+import styles from './Header.scss';
 
 /**
  * Header component

@@ -1,5 +1,7 @@
+@import 'typography';
+
 .header {
-  composes: header from "../../styles/typography.css";
+  @include header;
   text-align: center;
 }
 

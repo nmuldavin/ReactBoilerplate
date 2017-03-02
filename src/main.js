@@ -1,11 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Match } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import './utils/utils';
 import store from './store/createStore';
-import { Ping, Home } from './routes/routes';
-import Header from './components';
+import ConnectedRoutes from './Routes';
 
 
 /**
@@ -15,18 +14,13 @@ const MOUNT_NODE = document.getElementById('root');
 
 /**
  * Root
- * Root application component - wraps app in react-redux Provider component and Routing
- * NOTE: Using react-router v4 which is in alpha. The API could change.
- * @todo Connect router with redux store after router 4 api is finalized
+ * Root application component - wraps app in react-redux Provider component and
+ * Browser Router. Renders routes specified in ConnectedRoutes component
  */
 const Root = () => (
   <Provider store={store}>
     <BrowserRouter>
-      <div>
-        <Header />
-        <Match exactly pattern="/" component={Home} />
-        <Match exactly pattern="/ping" component={Ping} />
-      </div>
+      <ConnectedRoutes />
     </BrowserRouter>
   </Provider>
 );

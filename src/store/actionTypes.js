@@ -11,6 +11,7 @@ const actionTypes = {
   PONG: 'PONG',
   PING: 'PING',
   EPIC_RELOAD: '@@redux-most/EPIC_END',
+  LOCATION_CHANGE: '@@router/LOCATION_CHANGE',
 };
 
 export default actionTypes;

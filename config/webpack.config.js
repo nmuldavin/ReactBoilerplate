@@ -75,28 +75,6 @@ webpackConfig.externals = [
 // ------------------------------------
 webpackConfig.plugins = [
   new webpack.DefinePlugin(config.globals),
-  new webpack.LoaderOptionsPlugin({
-    options: {
-      context: __dirname,
-      postcss: [
-        cssnano({
-          autoprefixer: {
-            add: true,
-            remove: true,
-            browsers: ['last 2 versions'],
-          },
-          discardComments: {
-            removeAll: true,
-          },
-          discardUnused: false,
-          mergeIdents: false,
-          reduceIdents: false,
-          safe: true,
-          sourcemap: true,
-        }),
-      ],
-    },
-  }),
   new HtmlWebpackPlugin({
     template: paths.client('index.html'),
     hash: false,
@@ -161,54 +139,120 @@ if (!ENV_TEST) {
 // ------------------------------------
 // Loaders
 // ------------------------------------
-// JavaScript / JSON
-webpackConfig.module.loaders = [{
-  test: /\.(js|jsx)$/,
-  exclude: /node_modules/,
+//
+const babelLoader = {
   loader: 'babel-loader',
-  query: config.babelConfig,
-}, {
-  test: /\.json$/,
-  loader: 'json-loader',
-}];
+  options: config.babelConfig,
+};
 
-// ------------------------------------
-// Style Loaders
-// ------------------------------------
-// We use cssnano with the postcss loader, so we tell
-// css-loader not to duplicate minimization.
-const BASE_CSS_LOADER = 'css-loader?sourceMap&-minimize&modules&camelCase';
+const styleLoader = 'style-loader';
 
-// webpackConfig.module.loaders.push({
-//   test: /\.scss$/,
-//   loaders: [
-//     'style-loader',
-//     BASE_CSS_LOADER,
-//     'postcss-loader',
-//     'sass-loader?sourceMap',
-//   ],
-// });
-webpackConfig.module.loaders.push({
-  test: /\.css$/,
-  loaders: [
-    'style-loader',
-    BASE_CSS_LOADER,
-    'postcss-loader',
-  ],
+const cssLoader = importLoaders => ({
+  loader: 'css-loader',
+  options: {
+    sourceMap: true,
+    modules: true,
+    camelCase: true,
+    importLoaders,
+  },
 });
 
-// File loaders
-/* eslint-disable */
-webpackConfig.module.loaders.push(
-  { test: /\.woff(\?.*)?$/,  loader: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff' },
-  { test: /\.woff2(\?.*)?$/, loader: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff2' },
-  { test: /\.otf(\?.*)?$/,   loader: 'file-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=font/opentype' },
-  { test: /\.ttf(\?.*)?$/,   loader: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/octet-stream' },
-  { test: /\.eot(\?.*)?$/,   loader: 'file-loader?prefix=fonts/&name=[path][name].[ext]' },
-  { test: /\.svg(\?.*)?$/,   loader: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml' },
-  { test: /\.(png|jpg)$/,    loader: 'url-loader?limit=8192' }
-);
+const sassLoader = {
+  loader: 'sass-loader',
+  options: {
+    sourceMap: true,
+    includePaths: [
+      paths.scss(),
+    ],
+  },
+};
 
+const postcssLoader = {
+  loader: 'postcss-loader',
+  options: {
+    plugins: [
+      cssnano({
+        autoprefixer: {
+          add: true,
+          remove: true,
+          browsers: ['last 2 versions'],
+        },
+        discardComments: {
+          removeAll: true,
+        },
+        discardUnused: false,
+        mergeIdents: false,
+        reduceIdents: false,
+        safe: true,
+        sourcemap: true,
+      }),
+    ],
+  },
+};
+
+const wrapExtractText = ([fallback, ...use]) => {
+  if (ENV_DEV) {
+    return [fallback, ...use];
+  }
+
+  return ExtractTextPlugin.extract({
+    fallback,
+    use,
+  });
+};
+
+webpackConfig.module.rules = [
+  {
+    test: /\.(js|jsx)$/,
+    use: babelLoader,
+    exclude: /node_modules/,
+  },
+  {
+    test: /\.css$/,
+    loaders: wrapExtractText([
+      styleLoader,
+      cssLoader(1),
+      postcssLoader,
+    ]),
+  },
+  {
+    test: /\.scss$/,
+    loaders: wrapExtractText([
+      styleLoader,
+      cssLoader(2),
+      postcssLoader,
+      sassLoader,
+    ]),
+  },
+  {
+    test: /\.woff(\?.*)?$/,
+    use: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff',
+  },
+  {
+    test: /\.woff2(\?.*)?$/,
+    use: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/font-woff2',
+  },
+  {
+    test: /\.otf(\?.*)?$/,
+    use: 'file-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=font/opentype',
+  },
+  {
+    test: /\.ttf(\?.*)?$/,
+    use: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=application/octet-stream',
+  },
+  {
+    test: /\.eot(\?.*)?$/,
+    use: 'file-loader?prefix=fonts/&name=[path][name].[ext]',
+  },
+  {
+    test: /\.svg(\?.*)?$/,
+    use: 'url-loader?prefix=fonts/&name=[path][name].[ext]&limit=10000&mimetype=image/svg+xml',
+  },
+  {
+    test: /\.(png|jpg)$/,
+    use: 'url-loader?limit=8192',
+  },
+];
 
 // ------------------------------------
 // Finalize Configuration
@@ -217,20 +261,6 @@ webpackConfig.module.loaders.push(
 // need to use the extractTextPlugin to fix this issue:
 // http://stackoverflow.com/questions/34133808/webpack-ots-parsing-error-loading-fonts/34133809#34133809
 if (!ENV_DEV) {
-  debug('Apply ExtractTextPlugin to CSS loaders.');
-  webpackConfig.module.loaders.filter(loader =>
-    loader.loaders && loader.loaders.find(name => /css/.test(name.split('?')[0]))
-  ).forEach((loader) => {
-    const first = loader.loaders[0];
-    const rest = loader.loaders.slice(1);
-    loader.loader = ExtractTextPlugin.extract({
-      fallbackLoader: first,
-      loader: rest.join('!'),
-    });
-    delete loader.loaders;
-  });
-
-  /* eslint-enable */
   webpackConfig.plugins.push(
     new ExtractTextPlugin({
       filename: '[name].[contenthash].css',
